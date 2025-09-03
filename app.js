@@ -43,7 +43,7 @@ app.post("/addtodo", isLoggedIn, async (req, res) => {
   res.redirect("/todos");
 });
 app.get("/login", (req, res) => {
-  res.render("login", { errorMag: null, email: "" });
+  res.render("login", { errorMag: "", email: "" });
 });
 
 app.get("/logout", (req, res) => {
