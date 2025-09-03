@@ -1,33 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <title>My Todos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {},
+        },
+      };
+    </script>
   </head>
   <body
-    class="bg-gray-100 min-h-screen flex flex-col items-center px-4 relative"
+    class="bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col items-center px-4 relative"
   >
-    <!-- Logout button top-right -->
-    <a
-      href="/logout"
-      class="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-    >
-      Logout
-    </a>
+    <!-- Logout + Dark Mode toggle -->
+    <div class="absolute top-4 right-4 flex space-x-2">
+      <!-- Dark Mode Toggle -->
+      <button
+        id="darkToggle"
+        class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+      >
+        🌓
+      </button>
+      <!-- Logout -->
+      <a
+        href="/logout"
+        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+      >
+        Logout
+      </a>
+    </div>
 
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-2xl mt-20">
+    <div
+      class="bg-white dark:bg-gray-800 p-8 rounded shadow-md w-full max-w-2xl mt-20"
+    >
       <!-- Greeting -->
-      <h1 class="text-3xl font-bold text-blue-700 mb-2">
-        Hey, <%= userName.split(" ")[0] %> 👋
+      <h1
+        class="text-3xl md:text-4xl font-bold text-blue-700 dark:text-blue-400 mb-2"
+      >
+        Hey, <%= userFristName.charAt(0).toUpperCase() +
+        userFristName.slice(1).toLowerCase() %> 👋
       </h1>
-      <p class="text-gray-600 mb-4 text-lg">Stay consistent, stay motivated.</p>
+      <p class="text-gray-600 dark:text-gray-300 mb-4 text-lg">
+        Stay consistent, stay motivated.
+      </p>
 
       <!-- Add Todo Input and Button -->
-      <div class="mb-4 flex items-center justify-between space-x-4">
+      <div
+        class="mb-4 flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0 sm:space-x-4"
+      >
         <form
           id="todoForm"
-          class="flex items-center w-full justify-between space-x-4"
+          class="flex flex-col sm:flex-row items-center w-full justify-between space-y-2 sm:space-y-0 sm:space-x-4"
           action="<%= typeof editTodo !== 'undefined' ? '/edit-todo/' +  editTodo._id : '/addtodo' %>"
           method="POST"
         >
@@ -36,7 +63,7 @@
             name="todo"
             id="todoInput"
             placeholder="write new todo..."
-            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
             value="<%= typeof editTodo != 'undefined' ? editTodo.todo : '' %>"
             required
           />
@@ -44,59 +71,83 @@
             type="date"
             name="date"
             id="dateInput"
-            placeholder="Select date"
-            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
             value="<%= typeof editTodo != 'undefined' ? editTodo.date : '' %>"
             required
           />
           <button
             type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full sm:w-auto"
           >
             <%= typeof editTodo !== 'undefined' ? "Update" : 'Add' %>
           </button>
         </form>
       </div>
 
-      <!-- Hardcoded Todos -->
+      <!-- Todos List -->
       <ul class="space-y-4" id="todoList">
-        <div class="w-full flex justify-between px-4 mb-0">
-          <span class="text-gray-800 text-bold font-bold underline"
-            >Todos
-          </span>
-          <span class="text-gray-800 font-bold underline">Date</span>
-          <span class="text-gray-800 font-bold underline"> Edit/Delete </span>
+        <div
+          class="w-full flex justify-between px-4 mb-0 text-gray-800 dark:text-gray-100 font-bold underline"
+        >
+          <span>Todos</span>
+          <span>Date</span>
+          <span>Edit/Delete</span>
         </div>
 
         <% if(todos.length > 0) { %> <% todos.forEach(todo => { %>
         <li
-          class="flex items-center justify-between bg-gray-100 py-2 rounded-md"
+          class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 py-2 rounded-md"
         >
-          <div class="w-full flex justify-between px-4">
-            <span class="text-gray-800"><%= todo.todo %> </span>
-            <span class="text-gray-800"><%= todo.date %> </span>
-            <div>
+          <div
+            class="w-full flex flex-row justify-between px-4 space-y-1 sm:space-y-0 sm:items-center"
+          >
+            <span class="text-gray-800 dark:text-gray-200"
+              ><%= todo.todo %></span
+            >
+            <span class="text-gray-800 dark:text-gray-200"
+              ><%= todo.date %></span
+            >
+            <div class="flex space-x-2">
               <a
                 href="/edit/<%= todo._id %>"
-                class="h-full bg-blue-500 px-2 py-1 font-semibold text-[15px]"
+                class="bg-blue-500 px-2 py-1 font-semibold text-[15px] rounded hover:bg-blue-600 transition"
                 >Edit</a
               >
-
               <a
                 href="/delete/<%= todo._id %>"
-                class="bg-red-500 px-2 py-1 font-semibold text-[15px]"
+                class="bg-red-500 px-2 py-1 font-semibold text-[15px] rounded hover:bg-red-600 transition"
                 >Delete</a
               >
             </div>
           </div>
         </li>
-        <% }) %>
+        <% }) %> <% } else { %>
+        <p
+          class="text-gray-600 dark:text-gray-300 w-full flex justify-center py-8"
+        >
+          No todos available. Add a new todo!
+        </p>
+        <% } %>
       </ul>
-      <% }else{ %>
-      <p class="text-gray-600 w-full flex justify-center py-8">
-        No todos available. Add a new todo!
-      </p>
-      <%} %>
     </div>
+
+    <script>
+      // On page load, apply dark mode if saved
+      if (localStorage.getItem("darkMode") === "enabled") {
+        document.documentElement.classList.add("dark");
+      }
+
+      const toggle = document.getElementById("darkToggle");
+      toggle.addEventListener("click", () => {
+        document.documentElement.classList.toggle("dark");
+
+        // Save state in localStorage
+        if (document.documentElement.classList.contains("dark")) {
+          localStorage.setItem("darkMode", "enabled");
+        } else {
+          localStorage.setItem("darkMode", "disabled");
+        }
+      });
+    </script>
   </body>
 </html>
